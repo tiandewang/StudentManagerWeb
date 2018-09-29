@@ -13,7 +13,8 @@ import com.ischoolbar.programmer.util.StringUtil;
 
 /**
  * 
- * @author tian-de-gui-ren 登录验证servlet
+ * @author tian-de-gui-ren 
+ * 登录验证servlet
  */
 public class LoginServlet extends HttpServlet {
 
@@ -41,6 +42,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		// 验证码验证通过，对比用户名密码是否正确
+		String loginStatus = "loginFaild";
 		switch (type) {
 		case 1: {
 			AdminDao adminDao = new AdminDao();
@@ -53,12 +55,13 @@ public class LoginServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", admin);
 			session.setAttribute("userType", type);
-			response.getWriter().write("admin");
+			loginStatus = "loginSuccess";
 			break;
 		}
 		default:
 			break;
 		}
+		response.getWriter().write(loginStatus);
 		// 用户名密码正确
 	}
 }
