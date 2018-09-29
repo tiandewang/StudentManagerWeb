@@ -21,14 +21,14 @@
 					 				{"menuid":"21","menuname":"学生列表","icon":"icon-user-student","url":"StudentServlet?method=toStudentListView"},
 								]
 						},
-						{"menuid":"3","icon":"","menuname":"教师信息管理",
-							"menus":[
-									{"menuid":"31","menuname":"教师列表","icon":"icon-user-teacher","url":"TeacherServlet?method=toTeacherListView"},
-								]
-						},
 						{"menuid":"4","icon":"","menuname":"班级信息管理",
 							"menus":[
 									{"menuid":"42","menuname":"班级列表","icon":"icon-house","url":"ClazzServlet?method=toClazzListView"},
+								]
+						},
+						{"menuid":"3","icon":"","menuname":"教师信息管理",
+							"menus":[
+									{"menuid":"31","menuname":"教师列表","icon":"icon-user-teacher","url":"TeacherServlet?method=toTeacherListView"},
 								]
 						},
 						{"menuid":"5","icon":"","menuname":"系统管理",
@@ -53,7 +53,7 @@
     <div region="north" split="true" border="false" style="overflow: hidden; height: 30px;
         background: url(images/layout-browser-hd-bg.gif) #7f99be repeat-x center 50%;
         line-height: 20px;color: #fff; font-family: Verdana, 微软雅黑,黑体">
-        <span style="float:right; padding-right:20px;" class="head"><span style="color:red; font-weight:bold;">${user.name}&nbsp;</span>您好&nbsp;&nbsp;&nbsp;<a href="LoginServlet?method=LoginOut" id="loginOut">安全退出</a></span>
+        <span style="float:right; padding-right:20px;" class="head"><span style="color:red; font-weight:bold;">${user.name}&nbsp;</span>您好&nbsp;&nbsp;&nbsp;<a href="LoginServlet?method=logout" id="loginOut">安全退出</a></span>
         <span style="padding-left:10px; font-size: 16px; ">学生信息管理系统</span>
     </div>
     <div region="south" split="true" style="height: 30px; background: #D2E0F2; ">

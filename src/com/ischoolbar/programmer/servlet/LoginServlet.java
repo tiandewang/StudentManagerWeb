@@ -28,6 +28,11 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String method = request.getParameter("method");
+		if("logout".equals(method)) {
+			logout(request, response);
+			return;
+		}
 		String vcode = request.getParameter("vcode");
 		String name = request.getParameter("account");
 		String password = request.getParameter("password");
@@ -63,5 +68,10 @@ public class LoginServlet extends HttpServlet {
 		}
 		response.getWriter().write(loginStatus);
 		// 用户名密码正确
+	}
+	private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().removeAttribute("user");
+		request.getSession().removeAttribute("userType");
+		response.sendRedirect("index.jsp");
 	}
 }
