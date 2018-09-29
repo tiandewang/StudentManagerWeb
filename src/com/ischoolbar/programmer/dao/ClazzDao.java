@@ -55,20 +55,8 @@ public class ClazzDao extends BaseDao {
 		return total;
 	}
 	public boolean addClazz(Clazz clazz) {
-		int total = 0;
-		String sql = "insert into s_clazz(null,?,?) values()";
-		if (!StringUtil.isEmpty(clazz.getName())) {
-			sql += "where name like '%" + clazz.getName() + "%'";
-		}
-		ResultSet resultSet = query(sql);
-		try {
-			while (resultSet.next()) {
-				total = resultSet.getInt("total");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return;
+		String sql = "insert into s_clazz values(null,'"+clazz.getName()+"','"+clazz.getInfo()+"')";
+		System.out.println(sql);
+		return update(sql);
 	}
 }

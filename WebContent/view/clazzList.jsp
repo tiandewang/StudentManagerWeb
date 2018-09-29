@@ -116,7 +116,7 @@
 										$("#addDialog").dialog("close");
 										//清空原表格数据
 										$("#add_name").textbox('setValue', "");
-										
+										$("#info").val("");
 										//重新刷新页面数据
 							  			//$('#gradeList').combobox("setValue", gradeid);
 							  			$('#dataList').datagrid("reload");

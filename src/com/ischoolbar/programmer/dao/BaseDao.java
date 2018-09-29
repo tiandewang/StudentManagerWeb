@@ -36,4 +36,16 @@ public class BaseDao {
 		}
 		return null;
 	}
+	/**
+	 * 改变数据库内容操作
+	 */
+	public boolean update(String sql) {
+		try {
+			return dbUtil.getConnection().prepareStatement(sql).executeUpdate()>0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

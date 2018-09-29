@@ -39,12 +39,20 @@ public class ClazzServlet extends HttpServlet {
 
 	private void addClazz(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		String name = request.getParameter("clazzName");
+		String name = request.getParameter("name");
 		String info = request.getParameter("info");
 		Clazz clazz = new Clazz();
 		clazz.setName(name);
 		clazz.setInfo(info);
 		ClazzDao clazzDao = new ClazzDao();
+		if(clazzDao.addClazz(clazz)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void clazzList(HttpServletRequest request, HttpServletResponse response) {
