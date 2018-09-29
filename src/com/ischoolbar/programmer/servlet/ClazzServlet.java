@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ischoolbar.programmer.dao.ClazzDao;
 import com.ischoolbar.programmer.model.Clazz;
+import com.ischoolbar.programmer.model.Page;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * 
@@ -42,13 +47,22 @@ public class ClazzServlet extends HttpServlet {
 
 	private void getClazzList(HttpServletRequest request, HttpServletResponse response) {
 		String name = request.getParameter("name");
-		Integer page = Integer.parseInt(request.getParameter("page"));
+		Integer currentPage = Integer.parseInt(request.getParameter("page"));
 		Integer pageSize = Integer.parseInt(request.getParameter("rows"));
 		Clazz clazz = new Clazz();
 		clazz.setName(name);
 		ClazzDao clazzDao = new ClazzDao();
-		List<Clazz> clazzList = clazzDao.getClazzList(clazz, page, pageSize);
+		List<Clazz> clazzList = clazzDao.getClazzList(clazz, new Page(currentPage, pageSize));
 		clazzDao.closecon();
+		JsonConfig jsonConfig = new JsonConfig();
+		String clazzListString = JSONArray.fromObject(clazzList, jsonConfig).toString();
+		response.setCharacterEncoding("UTF-8");
+		try {
+			response.getWriter().write(clazzListString);
+		} catch (IOException e) { 
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-}
+} 

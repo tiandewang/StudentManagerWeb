@@ -11,16 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ischoolbar.programmer.model.Clazz;
+import com.ischoolbar.programmer.model.Page;
 import com.ischoolbar.programmer.util.StringUtil;
 
 public class ClazzDao extends BaseDao {
-	public List<Clazz> getClazzList(Clazz clazz, int start, int pageSize) {
+	public List<Clazz> getClazzList(Clazz clazz, Page page) {
 		List<Clazz> ret = new ArrayList<Clazz>();
 		String sql = "select * from s_clazz";
 		if (!StringUtil.isEmpty(clazz.getName())) {
 			sql += "where name like'%" + clazz.getName() + "'";
 		}
-		sql += " limit " + start + "," + pageSize;
+		sql += " limit " + page.getStart() + "," + page.getPageSize();
 		ResultSet resultSet = query(sql);
 		try {
 			while (resultSet.next()) {
