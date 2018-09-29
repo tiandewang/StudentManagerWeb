@@ -20,7 +20,7 @@
 	        collapsible: false,//是否可折叠的 
 	        fit: true,//自动大小 
 	        method: "post",
-	        url:"ClazzServlet?method=ClazzDetailList&t="+new Date().getTime(),
+	        url:"ClazzServlet?method=getClazzList&t="+new Date().getTime(),
 	        idField:'id', 
 	        singleSelect: true,//是否单选 
 	        pagination: true,//分页控件 
