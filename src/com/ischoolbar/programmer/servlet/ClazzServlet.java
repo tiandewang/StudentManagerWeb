@@ -34,6 +34,24 @@ public class ClazzServlet extends HttpServlet {
 			getClazzList(request, response);
 		}else if("AddClazz".equals(method)) {
 			addClazz(request, response);
+		}else if("DeleteClazz".equals(method)) {
+			deleteClazz(request, response);
+		}
+	}
+
+	private void deleteClazz(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		Integer id = Integer.parseInt(request.getParameter("clazzid"));
+		ClazzDao clazzDao = new ClazzDao();
+		if(clazzDao.deleteClazz(id)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				clazzDao.closeCon();
+			}
 		}
 	}
 
@@ -51,6 +69,8 @@ public class ClazzServlet extends HttpServlet {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}finally {
+				clazzDao.closeCon();
 			}
 		}
 	}
@@ -74,7 +94,7 @@ public class ClazzServlet extends HttpServlet {
 		ClazzDao clazzDao = new ClazzDao();
 		List<Clazz> clazzList = clazzDao.getClazzList(clazz, new Page(currentPage, pageSize));
 		int total = clazzDao.getClazzListTotal(clazz);
-		clazzDao.closecon();
+		clazzDao.closeCon();
 		response.setCharacterEncoding("UTF-8");
 		Map<String, Object> ret = new HashMap<String, Object>();
 		ret.put("total",total);

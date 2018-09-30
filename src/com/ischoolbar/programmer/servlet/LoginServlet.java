@@ -52,7 +52,7 @@ public class LoginServlet extends HttpServlet {
 		case 1: {
 			AdminDao adminDao = new AdminDao();
 			Admin admin = adminDao.login(name, password);
-			adminDao.closecon();
+			adminDao.closeCon();
 			if (admin == null) {
 				response.getWriter().write("loginError");
 				return;

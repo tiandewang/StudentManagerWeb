@@ -22,7 +22,7 @@
 	        method: "post",
 	        url:"ClazzServlet?method=getClazzList&t="+new Date().getTime(),
 	        idField:'id', 
-	        singleSelect: false,//是否单选 
+	        singleSelect: true,//是否单选 
 	        pagination: true,//分页控件 
 	        rownumbers: true,//行号 
 	        sortName: 'id',
@@ -53,11 +53,12 @@
 	    //删除
 	    $("#delete").click(function(){
 	    	var selectRow = $("#dataList").datagrid("getSelected");
+	    	//
         	if(selectRow == null){
             	$.messager.alert("消息提醒", "请选择数据进行删除!", "warning");
             } else{
             	var clazzid = selectRow.id;
-            	$.messager.confirm("消息提醒", "将删除与班级相关的所有数据(包括学生)，确认继续？", function(r){
+            	$.messager.confirm("消息提醒", "将删除班级信息（如果班级下存在学生或教师则不能删除），确认继续？", function(r){
             		if(r){
             			$.ajax({
 							type: "post",
@@ -150,6 +151,14 @@
 	  			clazzName: $('#clazzName').val()
 	  		});
 	  	});
+	  	
+	  //修改按钮监听事件
+	  	$("#edit-btn").click(function(){
+	  		var selectRow = $("#dataList").datagrid("getSelected");
+        	if(selectRow == null){
+            	$.messager.alert("消息提醒", "请选择数据进行修改!", "warning");
+            }
+	  	});
 	});
 	</script>
 </head>
@@ -161,6 +170,7 @@
 	<!-- 工具栏 -->
 	<div id="toolbar">
 		<div style="float: left;"><a id="add" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加</a></div>
+		<div style="float: left; margin-right: 10px;"><a id="edit-btn" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a></div>
 		<div style="float: left; margin-right: 10px;"><a id="delete" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-some-delete',plain:true">删除</a></div>
 		<div style="margin-top: 3px;">班级名称：<input id="clazzName" class="easyui-textbox" name="clazzName" />
 			<a id="search-btn" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true">搜索</a>
@@ -179,6 +189,24 @@
 	    			<td>班级介绍:</td>
 	    			<td>
 	    				<textarea id="info" name="info" style="width: 200px; height: 60px;" class=""></textarea>
+	    			</td>
+	    		</tr>
+	    	</table>
+	    </form>
+	</div>
+	
+	<!-- 编辑窗口 -->
+	<div id="editDialog" style="padding: 10px">  
+    	<form id="editForm" method="post">
+	    	<table cellpadding="8" >
+	    		<tr>
+	    			<td>班级名称:</td>
+	    			<td><input id="edit_name" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="name"   data-options="required:true, missingMessage:'不能为空'" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td>班级介绍:</td>
+	    			<td>
+	    				<textarea id="edit_info" name="info" style="width: 200px; height: 60px;" class=""></textarea>
 	    			</td>
 	    		</tr>
 	    	</table>

@@ -56,7 +56,10 @@ public class ClazzDao extends BaseDao {
 	}
 	public boolean addClazz(Clazz clazz) {
 		String sql = "insert into s_clazz values(null,'"+clazz.getName()+"','"+clazz.getInfo()+"')";
-		System.out.println(sql);
+		return update(sql);
+	}
+	public boolean deleteClazz(int id) {
+		String sql = "delete from s_clazz where id = "+id;
 		return update(sql);
 	}
 }

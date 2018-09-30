@@ -19,7 +19,7 @@ public class BaseDao {
 	/**
 	 * 关闭数据库链接，释放资源
 	 */
-	public void closecon() {
+	public void closeCon() {
 		dbUtil.closeCon();
 	}
 
