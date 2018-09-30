@@ -62,4 +62,9 @@ public class ClazzDao extends BaseDao {
 		String sql = "delete from s_clazz where id = "+id;
 		return update(sql);
 	}
+	public boolean editClazz(Clazz clazz) {
+		// TODO Auto-generated method stub
+		String sql = "update s_clazz set name = '"+clazz.getName()+"',info = '"+clazz.getInfo()+"' where id = " + clazz.getId();
+		return update(sql);
+	}
 }

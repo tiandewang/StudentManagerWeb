@@ -49,7 +49,7 @@
 	    //设置工具类按钮
 	    $("#add").click(function(){
 	    	$("#addDialog").dialog("open");
-	    });
+	    }); 
 	    //删除
 	    $("#delete").click(function(){
 	    	var selectRow = $("#dataList").datagrid("getSelected");
@@ -152,13 +152,86 @@
 	  		});
 	  	});
 	  	
-	  //修改按钮监听事件
+		//修改按钮监听事件
 	  	$("#edit-btn").click(function(){
 	  		var selectRow = $("#dataList").datagrid("getSelected");
+	  		//
         	if(selectRow == null){
             	$.messager.alert("消息提醒", "请选择数据进行修改!", "warning");
+            	return;
             }
+        	 $("#editDialog").dialog("open");
 	  	});
+	  
+	  //设置编辑班级窗口
+	    $("#editDialog").dialog({
+	    	title: "编辑班级",
+	    	width: 500,
+	    	height: 400,
+	    	iconCls: "icon-add",
+	    	modal: true,
+	    	collapsible: false,
+	    	minimizable: false,
+	    	maximizable: false,
+	    	draggable: true,
+	    	closed: true,
+	    	buttons: [
+	    		{
+					text:'确认修改',
+					plain: true,
+					iconCls:'icon-add',
+					handler:function(){
+						var validate = $("#editForm").form("validate");
+						if(!validate){
+							$.messager.alert("消息提醒","请检查你输入的数据!","warning");
+							return;
+						} else{
+							//var gradeid = $("#add_gradeList").combobox("getValue");
+							$.ajax({
+								type: "post",
+								url: "ClazzServlet?method=EditClazz",
+								data: $("#editForm").serialize(),
+								success: function(msg){
+									if(msg == "success"){
+										$.messager.alert("消息提醒","修改成功!","info");
+										//关闭窗口
+										$("#editDialog").dialog("close");
+										//清空原表格数据
+										$("#edit_name").textbox('setValue', "");
+										$("#edit_info").val("");
+										//重新刷新页面数据
+							  			//$('#gradeList').combobox("setValue", gradeid);
+							  			$('#dataList').datagrid("reload");
+										
+									} else{
+										$.messager.alert("消息提醒","修改失败!","warning");
+										return;
+									}
+								}
+							});
+						}
+					}
+				},
+				{
+					text:'重置',
+					plain: true,
+					iconCls:'icon-reload',
+					handler:function(){
+						$("#edit_name").textbox('setValue', "");
+						//重新加载年级
+						$("#edit_info").val("");
+					}
+				},
+			],
+			onBeforeOpen: function(){
+				var selectRow = $("#dataList").datagrid("getSelected");
+				//设置值
+				$("#edit_name").textbox('setValue', selectRow.name);
+				$("#edit_info").val(selectRow.info);
+				$("#edit_id").val(selectRow.id);				
+			}
+	    });
+		
 	});
 	</script>
 </head>
@@ -180,6 +253,7 @@
 	<!-- 添加窗口 -->
 	<div id="addDialog" style="padding: 10px">  
     	<form id="addForm" method="post">
+    		
 	    	<table cellpadding="8" >
 	    		<tr>
 	    			<td>班级名称:</td>
@@ -198,6 +272,7 @@
 	<!-- 编辑窗口 -->
 	<div id="editDialog" style="padding: 10px">  
     	<form id="editForm" method="post">
+    	<input type="hidden" id="edit_id" name="id" >
 	    	<table cellpadding="8" >
 	    		<tr>
 	    			<td>班级名称:</td>

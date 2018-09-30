@@ -36,6 +36,30 @@ public class ClazzServlet extends HttpServlet {
 			addClazz(request, response);
 		}else if("DeleteClazz".equals(method)) {
 			deleteClazz(request, response);
+		}else if("EditClazz".equals(method)) {
+			editClazz(request, response);
+		}
+	}
+
+	private void editClazz(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		Integer id = Integer.parseInt(request.getParameter("id"));
+		String name = request.getParameter("name");
+		String info = request.getParameter("info");
+		Clazz clazz = new Clazz();
+		clazz.setName(name);
+		clazz.setInfo(info);
+		clazz.setId(id);
+		ClazzDao clazzDao = new ClazzDao();
+		if(clazzDao.editClazz(clazz)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				clazzDao.closeCon();
+			}
 		}
 	}
 
