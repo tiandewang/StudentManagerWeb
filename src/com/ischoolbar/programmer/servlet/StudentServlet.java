@@ -20,7 +20,18 @@ public class StudentServlet extends HttpServlet {
 		String method = request.getParameter("method");
 		if("toStudentListView".equals(method)) {
 			studentList(request, response);
+		}else if("AddStudent".equals(method)) {
+			addStudent(request, response);
 		}
+	}
+
+	private void addStudent(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		String name = request.getParameter("name");
+		String password = request.getParameter("password");
+		String sex = request.getParameter("sex");
+		String mobile = request.getParameter("mobile");
+		int clazzId = Integer.parseInt(request.getParameter("clazzid"));
 	}
 
 	private void studentList(HttpServletRequest request, HttpServletResponse response) throws IOException {

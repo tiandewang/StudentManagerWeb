@@ -148,7 +148,7 @@
 	  	
 	  	
 	  	$("#add_clazzList").combobox({
-	  		url: "ClazzServlet?method=getClazzList&t="+new Date().getTime(),
+	  		url: "ClazzServlet?method=getClazzList&t="+new Date().getTime()+"&from=combox",
 	  		onLoadSuccess: function(){
 		  		//默认选择第一条数据
 				var data = $(this).combobox("getData");;
@@ -190,7 +190,6 @@
 							$.messager.alert("消息提醒","请检查你输入的数据!","warning");
 							return;
 						} else{
-							var gradeid = $("#add_gradeList").combobox("getValue");
 							var clazzid = $("#add_clazzList").combobox("getValue");
 							$.ajax({
 								type: "post",
@@ -356,15 +355,16 @@
 	    </div> 
     	<form id="addForm" method="post">
 	    	<table cellpadding="8" >
-	    		<tr>
-	    			<td>学号:</td>
-	    			<td>
-	    				<input id="add_number"  class="easyui-textbox" style="width: 200px; height: 30px;" type="text" name="number" data-options="required:true, validType:'repeat', missingMessage:'请输入学号'" />
-	    			</td>
-	    		</tr>
+	    		
 	    		<tr>
 	    			<td>姓名:</td>
 	    			<td><input id="add_name" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="name" data-options="required:true, missingMessage:'请填写姓名'" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td>密码:</td>
+	    			<td>
+	    				<input id="add_password"  class="easyui-textbox" style="width: 200px; height: 30px;" type="password" name="password" data-options="required:true, missingMessage:'请输入登录密码'" />
+	    			</td>
 	    		</tr>
 	    		<tr>
 	    			<td>性别:</td>
@@ -372,15 +372,11 @@
 	    		</tr>
 	    		<tr>
 	    			<td>电话:</td>
-	    			<td><input id="add_phone" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="phone" validType="mobile" /></td>
+	    			<td><input id="add_mobile" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="mobile" validType="mobile" /></td>
 	    		</tr>
 	    		<tr>
 	    			<td>QQ:</td>
 	    			<td><input id="add_qq" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="qq" validType="number" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>年级:</td>
-	    			<td><input id="add_gradeList" style="width: 200px; height: 30px;" class="easyui-textbox" name="gradeid" /></td>
 	    		</tr>
 	    		<tr>
 	    			<td>班级:</td>
