@@ -79,4 +79,14 @@
 		<servlet-name>ClazzServlet</servlet-name>
 		<url-pattern>/ClazzServlet</url-pattern>
 	</servlet-mapping>
+	
+		<servlet>
+		<description>图片管理</description>
+		<servlet-name>PhotoServlet</servlet-name>
+		<servlet-class>com.ischoolbar.programmer.servlet.PhotoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PhotoServlet</servlet-name>
+		<url-pattern>/PhotoServlet</url-pattern>
+	</servlet-mapping>
 </web-app>

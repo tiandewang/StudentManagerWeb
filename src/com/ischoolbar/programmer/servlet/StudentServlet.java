@@ -6,6 +6,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ischoolbar.programmer.dao.StudentDao;
+import com.ischoolbar.programmer.model.Student;
+import com.ischoolbar.programmer.util.SnGenerateUtil;
 /**
  * 
  * @author tian-de-gui-ren
@@ -31,7 +35,27 @@ public class StudentServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		String sex = request.getParameter("sex");
 		String mobile = request.getParameter("mobile");
+		String qq = request.getParameter("qq");
 		int clazzId = Integer.parseInt(request.getParameter("clazzid"));
+		Student student = new Student();
+		student.setClazzId(clazzId);
+		student.setMobile(mobile);
+		student.setName(name);
+		student.setPassword(password);
+		student.setQq(qq);
+		student.setSex(sex);
+		student.setSn(SnGenerateUtil.generateSn(clazzId));
+		StudentDao studentDao = new StudentDao();
+		if(studentDao.addStudent(student)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				studentDao.closeCon();
+			}
+		}
 	}
 
 	private void studentList(HttpServletRequest request, HttpServletResponse response) throws IOException {
