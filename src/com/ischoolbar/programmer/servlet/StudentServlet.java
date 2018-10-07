@@ -1,15 +1,24 @@
 package com.ischoolbar.programmer.servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ischoolbar.programmer.dao.ClazzDao;
 import com.ischoolbar.programmer.dao.StudentDao;
+import com.ischoolbar.programmer.model.Clazz;
+import com.ischoolbar.programmer.model.Page;
 import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.SnGenerateUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 /**
  * 
  * @author tian-de-gui-ren
@@ -26,6 +35,37 @@ public class StudentServlet extends HttpServlet {
 			studentList(request, response);
 		}else if("AddStudent".equals(method)) {
 			addStudent(request, response);
+		}else if("StudentList".equals(method)) {
+			getStudentList(request, response);
+		}
+	}
+	private void getStudentList(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		String name = request.getParameter("studentName");
+		Integer currentPage = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
+		Integer pageSize = request.getParameter("rows") == null ? 999 :Integer.parseInt(request.getParameter("rows"));
+		Integer clazz = request.getParameter("clazz") == null ? 0 :Integer.parseInt(request.getParameter("clazz"));
+		Student student = new Student();
+		student.setName(name);
+		student.setClazzId(clazz);
+		StudentDao studentDao = new StudentDao();
+		List<Student> studentList = studentDao.getStudentList(student, new Page(currentPage, pageSize));
+		int total = studentDao.getStudentListTotal(student);
+		studentDao.closeCon();
+		response.setCharacterEncoding("UTF-8");
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("total",total);
+		ret.put("rows", studentList);
+		try {
+			String from = request.getParameter("from");
+			if("combox".equals(from)) {
+				response.getWriter().write(JSONArray.fromObject(studentList).toString());
+			}else {
+			response.getWriter().write(JSONObject.fromObject(ret).toString());
+			}
+		} catch (IOException e) { 
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

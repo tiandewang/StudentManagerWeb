@@ -6,7 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ischoolbar.programmer.model.Clazz;
+import com.ischoolbar.programmer.model.Page;
+import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.DbUtil;
+import com.ischoolbar.programmer.util.StringUtil;
 
 /**
  * 
@@ -49,3 +53,4 @@ public class BaseDao {
 		return false;
 	}
 }
+
