@@ -5,25 +5,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ischoolbar.programmer.model.Clazz;
 import com.ischoolbar.programmer.model.Page;
 import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.StringUtil;
 
 public class StudentDao extends BaseDao {
 	public boolean addStudent(Student student) {
-		String sql = "insert into s_student values(null,'"+student.getSn()+"','"+student.getName()+"'";
+		String sql = "insert into s_student values(null,'" + student.getSn() + "','" + student.getName() + "'";
 		sql += ",'" + student.getPassword() + "'," + student.getClazzId();
 		sql += ",'" + student.getSex() + "','" + student.getMobile() + "'";
 		sql += ",'" + student.getQq() + "',null)";
 		return update(sql);
 	}
+
 	public Student getStudent(int id) {
-		String sql = "select * form s_student where id = " + id;
+		String sql = "select * from s_student where id = " + id;
 		Student student = null;
 		ResultSet resultSet = query(sql);
 		try {
-			if(resultSet.next()) {
+			if (resultSet.next()) {
 				student = new Student();
 				student.setId(resultSet.getInt("id"));
 				student.setClazzId(resultSet.getInt("clazz_id"));
@@ -41,14 +41,18 @@ public class StudentDao extends BaseDao {
 		}
 		return student;
 	}
+
 	public List<Student> getStudentList(Student student, Page page) {
 		List<Student> ret = new ArrayList<Student>();
 		String sql = "select * from s_student ";
 		if (!StringUtil.isEmpty(student.getName())) {
-			sql += "where name like '%" + student.getName() + "%'";
+			sql += "and name like '%" + student.getName() + "%'";
 		}
-		if(student.getClazzId() != 0) {
+		if (student.getClazzId() != 0) {
 			sql += " and clazz_id = " + student.getClazzId();
+		}
+		if (student.getId() != 0) {
+			sql += " and id = " + student.getId();
 		}
 		sql += " limit " + page.getStart() + "," + page.getPageSize();
 		ResultSet resultSet = query(sql.replaceFirst("and", "where"));
@@ -71,14 +75,18 @@ public class StudentDao extends BaseDao {
 		}
 		return ret;
 	}
+
 	public int getStudentListTotal(Student student) {
 		int total = 0;
 		String sql = "select count(*) as total from s_student ";
 		if (!StringUtil.isEmpty(student.getName())) {
-			sql += "where name like '%" + student.getName() + "%'";
+			sql += "and name like '%" + student.getName() + "%'";
 		}
-		if(student.getClazzId() != 0) {
+		if (student.getClazzId() != 0) {
 			sql += " and clazz_id = " + student.getClazzId();
+		}
+		if(student.getId() != 0){
+			sql += " and id = " + student.getId();
 		}
 		ResultSet resultSet = query(sql.replaceFirst("and", "where"));
 		try {

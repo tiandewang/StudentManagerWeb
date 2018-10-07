@@ -43,23 +43,23 @@ public class StudentServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String name = request.getParameter("studentName");
 		Integer currentPage = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
-		Integer pageSize = request.getParameter("rows") == null ? 999 :Integer.parseInt(request.getParameter("rows"));
-		Integer clazz = request.getParameter("clazzid") == null ? 0 :Integer.parseInt(request.getParameter("clazzid"));
+		Integer pageSize = request.getParameter("rows") == null ? 999 : Integer.parseInt(request.getParameter("rows"));
+		Integer clazz = request.getParameter("clazzid") == null ? 0 : Integer.parseInt(request.getParameter("clazzid"));
 		Student student = new Student();
 		student.setName(name);
 		student.setClazzId(clazz);
 		StudentDao studentDao = new StudentDao();
-		List<Student> studentList = studentDao.getStudentList(student, new Page(currentPage, pageSize));
+		List<Student> clazzList = studentDao.getStudentList(student, new Page(currentPage, pageSize));
 		int total = studentDao.getStudentListTotal(student);
 		studentDao.closeCon();
 		response.setCharacterEncoding("UTF-8");
 		Map<String, Object> ret = new HashMap<String, Object>();
 		ret.put("total",total);
-		ret.put("rows", studentList);
+		ret.put("rows", clazzList);
 		try {
 			String from = request.getParameter("from");
 			if("combox".equals(from)) {
-				response.getWriter().write(JSONArray.fromObject(studentList).toString());
+				response.getWriter().write(JSONArray.fromObject(clazzList).toString());
 			}else {
 			response.getWriter().write(JSONObject.fromObject(ret).toString());
 			}
@@ -105,6 +105,6 @@ public class StudentServlet extends HttpServlet {
 		} catch (ServletException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		};
+		}
 	}
 }

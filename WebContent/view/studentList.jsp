@@ -1,16 +1,18 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>学生列表</title>
-	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
-	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="easyui/css/demo.css">
-	<script type="text/javascript" src="easyui/jquery.min.js"></script>
-	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
-	<script type="text/javascript" src="easyui/js/validateExtends.js"></script>
-	<script type="text/javascript">
+<meta charset="UTF-8">
+<title>学生列表</title>
+<link rel="stylesheet" type="text/css"
+	href="easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="easyui/css/demo.css">
+<script type="text/javascript" src="easyui/jquery.min.js"></script>
+<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="easyui/js/validateExtends.js"></script>
+<script type="text/javascript">
 	$(function() {	
 		//datagrid初始化 
 	    $('#dataList').datagrid({ 
@@ -38,16 +40,27 @@
  		        {field:'qq',title:'QQ',width:150},
  		        {field:'clazz_id',title:'班级',width:150, 
  		        	formatter: function(value,row,index){
- 						if (row.clazzid){
- 							//console.log($("#clazzList"));
- 							return row.clazzid.name;
+ 						if (row.clazzId){
+ 							var clazzList = $("#clazzList").combobox("getData");
+ 							for (var i=0;i<clazzList.length;i++ ){
+ 								//console.log($(clazzList[i]);
+ 								if(row.clazzId == clazzList[i].id)return clazzList[i].name;
+ 							}
+ 							return row.clazzId;
  						} else {
- 							return value;
+ 							return 'not found';
  						}
  					}
 				},
 	 		]], 
-	        toolbar: "#toolbar"
+	        toolbar: "#toolbar",
+	        onBeforeLoad : function(){
+	        	try{
+	        		$("#clazzList").combobox("getData")
+	        	}catch(err){
+	        		preLoadClazz();
+	        	}
+	        }
 	    }); 
 	    //设置分页控件 
 	    var p = $('#dataList').datagrid('getPager'); 
@@ -111,7 +124,7 @@
 	    
 	    
 	  	//班级下拉框
-	  	$("#clazzList").combobox({
+	  	/*$("#clazzList").combobox({
 	  		width: "150",
 	  		height: "25",
 	  		valueField: "id",
@@ -125,7 +138,25 @@
 	  			$('#dataList').datagrid("options").queryParams = {clazzid: newValue};
 	  			$('#dataList').datagrid("reload");
 	  		}
-	  	});
+	  	});*/
+	  	
+	    function preLoadClazz(){
+	  		$("#clazzList").combobox({
+		  		width: "150",
+		  		height: "25",
+		  		valueField: "id",
+		  		textField: "name",
+		  		multiple: false, //可多选
+		  		editable: false, //不可编辑
+		  		method: "post",
+		  		url: "ClazzServlet?method=getClazzList&t="+new Date().getTime()+"&from=combox",
+		  		onChange: function(newValue, oldValue){
+		  			//加载班级下的学生
+		  			//$('#dataList').datagrid("options").queryParams = {clazzid: newValue};
+		  			//$('#dataList').datagrid("reload");
+		  		}
+		  	});
+	  	}
 	  	
 	  	//下拉框通用属性
 	  	$("#add_clazzList, #edit_clazzList").combobox({
@@ -151,7 +182,7 @@
 	  	 
 	  	
 	  	$("#edit_clazzList").combobox({
-	  		url: "ClazzServlet?method=getClazzList&t="+new Date().getTime(),
+	  		url: "ClazzServlet?method=getClazzList&t="+new Date().getTime()+"&from=combox",
 			onLoadSuccess: function(){
 				//默认选择第一条数据
 				var data = $(this).combobox("getData");
@@ -202,7 +233,6 @@
 										//重新刷新页面数据
 										$('#dataList').datagrid("options").queryParams = {clazzid: clazzid};
 							  			$('#dataList').datagrid("reload");
-							  			$("#gradeList").combobox('setValue', gradeid);
 							  			setTimeout(function(){
 											$("#clazzList").combobox('setValue', clazzid);
 										}, 100);
@@ -319,105 +349,143 @@
 				
 			}
 	    });
-	   
+	  //搜索按钮监听事件
+	  	$("#search-btn").click(function(){
+	  		$('#dataList').datagrid('load',{
+	  			studentName: $('#search_student_name').val(),
+	  			clazzid: $("#clazzList").combobox('getValue') == '' ? 0 : $("#clazzList").combobox('getValue')
+	  		});
+	  	});
 	});
 	</script>
 </head>
 <body>
 	<!-- 学生列表 -->
-	<table id="dataList" cellspacing="0" cellpadding="0"> 
-	    
-	</table> 
+	<table id="dataList" cellspacing="0" cellpadding="0">
+
+	</table>
 	<!-- 工具栏 -->
 	<div id="toolbar">
-		<div style="float: left;"><a id="add" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加</a></div>
+		<div style="float: left;"><a id="add" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加</a>	</div>
 			<div style="float: left;" class="datagrid-btn-separator"></div>
 		<div style="float: left;"><a id="edit" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a></div>
 			<div style="float: left;" class="datagrid-btn-separator"></div>
 		<div style="float: left;"><a id="delete" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-some-delete',plain:true">删除</a></div>
+
+		<div style="float: left;margin-top:4px;" class="datagrid-btn-separator" >&nbsp;&nbsp;姓名：<input id="search_student_name" class="easyui-textbox" name="search_student_name" /></div>
+		<div style="margin-left: 10px;margin-top:4px;" >班级：<input id="clazzList" class="easyui-textbox" name="clazz" />
+			<a id="search-btn" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true">搜索</a>
+		</div>
 		
-		<div style="margin-left: 10px;">班级：<input id="clazzList" class="easyui-textbox" name="clazz" /></div>
-	
 	</div>
-	
+
 	<!-- 添加学生窗口 -->
-	<div id="addDialog" style="padding: 10px">  
-		<div style="float: right; margin: 20px 20px 0 0; width: 200px; border: 1px solid #EBF3FF" id="photo">
-	    	<img alt="照片" style="max-width: 200px; max-height: 400px;" title="照片" src="PhotoServlet?method=getPhoto" />
-	    </div> 
-    	<form id="addForm" method="post">
-	    	<table cellpadding="8" >
-	    		
-	    		<tr>
-	    			<td>姓名:</td>
-	    			<td><input id="add_name" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="name" data-options="required:true, missingMessage:'请填写姓名'" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>密码:</td>
-	    			<td>
-	    				<input id="add_password"  class="easyui-textbox" style="width: 200px; height: 30px;" type="password" name="password" data-options="required:true, missingMessage:'请输入登录密码'" />
-	    			</td>
-	    		</tr>
-	    		<tr>
-	    			<td>性别:</td>
-	    			<td><select id="add_sex" class="easyui-combobox" data-options="editable: false, panelHeight: 50, width: 60, height: 30" name="sex"><option value="男">男</option><option value="女">女</option></select></td>
-	    		</tr>
-	    		<tr>
-	    			<td>电话:</td>
-	    			<td><input id="add_mobile" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="mobile" validType="mobile" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>QQ:</td>
-	    			<td><input id="add_qq" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="qq" validType="number" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>班级:</td>
-	    			<td><input id="add_clazzList" style="width: 200px; height: 30px;" class="easyui-textbox" name="clazzid" /></td>
-	    		</tr>
-	    	</table>
-	    </form>
+	<div id="addDialog" style="padding: 10px">
+		<div
+			style="float: right; margin: 20px 20px 0 0; width: 200px; border: 1px solid #EBF3FF"
+			id="photo">
+			<img alt="照片" style="max-width: 200px; max-height: 400px;" title="照片"
+				src="PhotoServlet?method=getPhoto" />
+		</div>
+		<form id="addForm" method="post">
+			<table cellpadding="8">
+
+				<tr>
+					<td>姓名:</td>
+					<td><input id="add_name" style="width: 200px; height: 30px;"
+						class="easyui-textbox" type="text" name="name"
+						data-options="required:true, missingMessage:'请填写姓名'" /></td>
+				</tr>
+				<tr>
+					<td>密码:</td>
+					<td><input id="add_password" class="easyui-textbox"
+						style="width: 200px; height: 30px;" type="password"
+						name="password"
+						data-options="required:true, missingMessage:'请输入登录密码'" /></td>
+				</tr>
+				<tr>
+					<td>性别:</td>
+					<td><select id="add_sex" class="easyui-combobox"
+						data-options="editable: false, panelHeight: 50, width: 60, height: 30"
+						name="sex"><option value="男">男</option>
+							<option value="女">女</option></select></td>
+				</tr>
+				<tr>
+					<td>电话:</td>
+					<td><input id="add_mobile" style="width: 200px; height: 30px;"
+						class="easyui-textbox" type="text" name="mobile"
+						validType="mobile" /></td>
+				</tr>
+				<tr>
+					<td>QQ:</td>
+					<td><input id="add_qq" style="width: 200px; height: 30px;"
+						class="easyui-textbox" type="text" name="qq" validType="number" /></td>
+				</tr>
+				<tr>
+					<td>班级:</td>
+					<td><input id="add_clazzList"
+						style="width: 200px; height: 30px;" class="easyui-textbox"
+						name="clazzid" /></td>
+				</tr>
+			</table>
+		</form>
 	</div>
-	
+
 	<!-- 修改学生窗口 -->
 	<div id="editDialog" style="padding: 10px">
-		<div style="float: right; margin: 20px 20px 0 0; width: 200px; border: 1px solid #EBF3FF">
-	    	<img id="edit_photo" alt="照片" style="max-width: 200px; max-height: 400px;" title="照片" src="" />
-	    </div>   
-    	<form id="editForm" method="post">
-	    	<table cellpadding="8" >
-	    		<tr>
-	    			<td>学号:</td>
-	    			<td>
-	    				<input id="edit_number" data-options="readonly: true" class="easyui-textbox" style="width: 200px; height: 30px;" type="text" name="number" data-options="required:true, validType:'repeat', missingMessage:'请输入学号'" />
-	    			</td>
-	    		</tr>
-	    		<tr>
-	    			<td>姓名:</td>
-	    			<td><input id="edit_name" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="name" data-options="required:true, missingMessage:'请填写姓名'" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>性别:</td>
-	    			<td><select id="edit_sex" class="easyui-combobox" data-options="editable: false, panelHeight: 50, width: 60, height: 30" name="sex"><option value="男">男</option><option value="女">女</option></select></td>
-	    		</tr>
-	    		<tr>
-	    			<td>电话:</td>
-	    			<td><input id="edit_phone" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="phone" validType="mobile" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>QQ:</td>
-	    			<td><input id="edit_qq" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="qq" validType="number" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>年级:</td>
-	    			<td><input id="edit_gradeList" style="width: 200px; height: 30px;" class="easyui-textbox" name="gradeid" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td>班级:</td>
-	    			<td><input id="edit_clazzList" style="width: 200px; height: 30px;" class="easyui-textbox" name="clazzid" /></td>
-	    		</tr>
-	    	</table>
-	    </form>
+		<div
+			style="float: right; margin: 20px 20px 0 0; width: 200px; border: 1px solid #EBF3FF">
+			<img id="edit_photo" alt="照片"
+				style="max-width: 200px; max-height: 400px;" title="照片" src="" />
+		</div>
+		<form id="editForm" method="post">
+			<table cellpadding="8">
+				<tr>
+					<td>学号:</td>
+					<td><input id="edit_number" data-options="readonly: true"
+						class="easyui-textbox" style="width: 200px; height: 30px;"
+						type="text" name="number"
+						data-options="required:true, validType:'repeat', missingMessage:'请输入学号'" />
+					</td>
+				</tr>
+				<tr>
+					<td>姓名:</td>
+					<td><input id="edit_name" style="width: 200px; height: 30px;"
+						class="easyui-textbox" type="text" name="name"
+						data-options="required:true, missingMessage:'请填写姓名'" /></td>
+				</tr>
+				<tr>
+					<td>性别:</td>
+					<td><select id="edit_sex" class="easyui-combobox"
+						data-options="editable: false, panelHeight: 50, width: 60, height: 30"
+						name="sex"><option value="男">男</option>
+							<option value="女">女</option></select></td>
+				</tr>
+				<tr>
+					<td>电话:</td>
+					<td><input id="edit_phone" style="width: 200px; height: 30px;"
+						class="easyui-textbox" type="text" name="phone" validType="mobile" /></td>
+				</tr>
+				<tr>
+					<td>QQ:</td>
+					<td><input id="edit_qq" style="width: 200px; height: 30px;"
+						class="easyui-textbox" type="text" name="qq" validType="number" /></td>
+				</tr>
+				<tr>
+					<td>年级:</td>
+					<td><input id="edit_gradeList"
+						style="width: 200px; height: 30px;" class="easyui-textbox"
+						name="gradeid" /></td>
+				</tr>
+				<tr>
+					<td>班级:</td>
+					<td><input id="edit_clazzList"
+						style="width: 200px; height: 30px;" class="easyui-textbox"
+						name="clazzid" /></td>
+				</tr>
+			</table>
+		</form>
 	</div>
-	
+
 </body>
 </html>
