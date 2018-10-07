@@ -44,7 +44,7 @@ public class StudentServlet extends HttpServlet {
 		String name = request.getParameter("studentName");
 		Integer currentPage = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
 		Integer pageSize = request.getParameter("rows") == null ? 999 :Integer.parseInt(request.getParameter("rows"));
-		Integer clazz = request.getParameter("clazz") == null ? 0 :Integer.parseInt(request.getParameter("clazz"));
+		Integer clazz = request.getParameter("clazzid") == null ? 0 :Integer.parseInt(request.getParameter("clazzid"));
 		Student student = new Student();
 		student.setName(name);
 		student.setClazzId(clazz);

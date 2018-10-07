@@ -38,22 +38,14 @@
  		        {field:'qq',title:'QQ',width:150},
  		        {field:'clazz_id',title:'班级',width:150, 
  		        	formatter: function(value,row,index){
- 						if (row.clazz){
- 							return row.clazz.name;
+ 						if (row.clazzid){
+ 							//console.log($("#clazzList"));
+ 							return row.clazzid.name;
  						} else {
  							return value;
  						}
  					}
 				},
- 		        {field:'grade',title:'年级',width:150, 
-					formatter: function(value,row,index){
- 						if (row.grade){
- 							return row.grade.name;
- 						} else {
- 							return value;
- 						}
- 					}	
- 		       	},
 	 		]], 
 	        toolbar: "#toolbar"
 	    }); 
