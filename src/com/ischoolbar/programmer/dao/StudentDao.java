@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ischoolbar.programmer.model.Clazz;
 import com.ischoolbar.programmer.model.Page;
 import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.StringUtil;
@@ -17,7 +18,16 @@ public class StudentDao extends BaseDao {
 		sql += ",'" + student.getQq() + "',null)";
 		return update(sql);
 	}
-
+	public boolean editStudent(Student student) {
+		// TODO Auto-generated method stub
+		String sql = "update s_student set name = '"+student.getName()+"'";
+		sql += ",sex = '" + student.getSex() + "'";
+		sql += ",mobile = '" + student.getMobile() + "'";
+		sql += ",qq = '" + student.getQq() + "'";
+		sql += ",clazz_id = " + student.getClazzId();
+		sql += " where id = " + student.getId();
+		return update(sql);
+	}
 	public Student getStudent(int id) {
 		String sql = "select * from s_student where id = " + id;
 		Student student = null;

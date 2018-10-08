@@ -37,13 +37,12 @@ public class PhotoServlet extends HttpServlet {
 	private void getPhoto(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		// File file = new File();
-		int id = request.getParameter("uid") == null ? 0 : Integer.parseInt(request.getParameter("uid"));
-		if (id != 0) {
-			int useType = Integer.parseInt(request.getParameter("useType").toString());
+		int sid = request.getParameter("uid") == null ? 0 : Integer.parseInt(request.getParameter("uid"));
+		int tid = request.getParameter("tid") == null ? 0 : Integer.parseInt(request.getParameter("tid"));
+		if (sid != 0) {
 			//学生
-			if (useType == 2) {
 				StudentDao studentDao = new StudentDao();
-				Student student = studentDao.getStudent(id);
+				Student student = studentDao.getStudent(sid);
 				studentDao.closeCon();
 				if(student != null) {
 					InputStream photo = student.getPhoto();
@@ -59,10 +58,6 @@ public class PhotoServlet extends HttpServlet {
 						return;
 					}
 				}
-			}else if (useType == 3) {
-				//老师
-				return;
-			}
 		}
 		String path = request.getSession().getServletContext().getRealPath("");
 		File file = new java.io.File(path + "\\file\\Logo.jpg");

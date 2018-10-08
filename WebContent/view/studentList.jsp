@@ -282,7 +282,6 @@
 					iconCls:'icon-user_add',
 					handler:function(){
 						var validate = $("#editForm").form("validate");
-						var gradeid = $("#edit_gradeList").combobox("getValue");
 						var clazzid = $("#edit_clazzList").combobox("getValue");
 						if(!validate){
 							$.messager.alert("消息提醒","请检查你输入的数据!","warning");
@@ -302,7 +301,6 @@
 										$("#dataList").datagrid("reload");
 										$("#dataList").datagrid("uncheckAll");
 										
-										$("#gradeList").combobox('setValue', gradeid);
 							  			setTimeout(function(){
 											$("#clazzList").combobox('setValue', clazzid);
 										}, 100);
@@ -324,7 +322,7 @@
 						//清空表单
 						$("#edit_name").textbox('setValue', "");
 						$("#edit_sex").textbox('setValue', "男");
-						$("#edit_phone").textbox('setValue', "");
+						$("#edit_mobile").textbox('setValue', "");
 						$("#edit_qq").textbox('setValue', "");
 						$("#edit_gradeList").combobox("clear");
 						$("#edit_gradeList").combobox("reload");
@@ -334,15 +332,13 @@
 			onBeforeOpen: function(){
 				var selectRow = $("#dataList").datagrid("getSelected");
 				//设置值
-				$("#edit_number").textbox('setValue', selectRow.number);
 				$("#edit_name").textbox('setValue', selectRow.name);
 				$("#edit_sex").textbox('setValue', selectRow.sex);
-				$("#edit_phone").textbox('setValue', selectRow.phone);
+				$("#edit_mobile").textbox('setValue', selectRow.mobile);
 				$("#edit_qq").textbox('setValue', selectRow.qq);
-				$("#edit_photo").attr("src", "PhotoServlet?method=GetPhoto&type=2&number="+selectRow.number);
-				var gradeid = selectRow.gradeid;
-				var clazzid = selectRow.clazzid;
-				$("#edit_gradeList").combobox('setValue', gradeid);
+				$("#edit_photo").attr("src", "PhotoServlet?method=getPhoto&type=2&sid="+selectRow.id);
+				$("#edit-id").val(selectRow.id);
+				var clazzid = selectRow.clazzId;
 				setTimeout(function(){
 					$("#edit_clazzList").combobox('setValue', clazzid);
 				}, 100);
@@ -439,15 +435,8 @@
 				style="max-width: 200px; max-height: 400px;" title="照片" src="" />
 		</div>
 		<form id="editForm" method="post">
+			<input type="hidden" name="id" id="edit-id">
 			<table cellpadding="8">
-				<tr>
-					<td>学号:</td>
-					<td><input id="edit_number" data-options="readonly: true"
-						class="easyui-textbox" style="width: 200px; height: 30px;"
-						type="text" name="number"
-						data-options="required:true, validType:'repeat', missingMessage:'请输入学号'" />
-					</td>
-				</tr>
 				<tr>
 					<td>姓名:</td>
 					<td><input id="edit_name" style="width: 200px; height: 30px;"
@@ -463,19 +452,13 @@
 				</tr>
 				<tr>
 					<td>电话:</td>
-					<td><input id="edit_phone" style="width: 200px; height: 30px;"
-						class="easyui-textbox" type="text" name="phone" validType="mobile" /></td>
+					<td><input id="edit_mobile" style="width: 200px; height: 30px;"
+						class="easyui-textbox" type="text" name="mobile" validType="mobile" /></td>
 				</tr>
 				<tr>
 					<td>QQ:</td>
 					<td><input id="edit_qq" style="width: 200px; height: 30px;"
 						class="easyui-textbox" type="text" name="qq" validType="number" /></td>
-				</tr>
-				<tr>
-					<td>年级:</td>
-					<td><input id="edit_gradeList"
-						style="width: 200px; height: 30px;" class="easyui-textbox"
-						name="gradeid" /></td>
 				</tr>
 				<tr>
 					<td>班级:</td>
