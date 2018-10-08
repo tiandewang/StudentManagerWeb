@@ -43,7 +43,7 @@
  						if (row.clazzId){
  							var clazzList = $("#clazzList").combobox("getData");
  							for (var i=0;i<clazzList.length;i++ ){
- 								//console.log($(clazzList[i]);
+ 								//console.log(clazzList[i]);
  								if(row.clazzId == clazzList[i].id)return clazzList[i].name;
  							}
  							return row.clazzId;
@@ -104,7 +104,7 @@
             			$.ajax({
 							type: "post",
 							url: "StudentServlet?method=DeleteStudent",
-							data: {numbers: numbers, ids: ids},
+							data: {sns: numbers, ids: ids},
 							success: function(msg){
 								if(msg == "success"){
 									$.messager.alert("消息提醒","删除成功!","info");
@@ -338,7 +338,7 @@
 				$("#edit_qq").textbox('setValue', selectRow.qq);
 				$("#edit_photo").attr("src", "PhotoServlet?method=getPhoto&type=2&sid="+selectRow.id);
 				$("#edit-id").val(selectRow.id);
-				$("#set-photo-id").val(selectRow.id)
+				$("#set-photo-id").val(selectRow.id);
 				var clazzid = selectRow.clazzId;
 				setTimeout(function(){
 					$("#edit_clazzList").combobox('setValue', clazzid);
@@ -356,14 +356,21 @@
 	});
 		//上传图片按钮事件
 	$("#uploadBtn").click(function(){
-		$("#uploadForm").submit();
-		setTimeout(function(){
-			var message =  $(window.frames["photo_target"].document).find("#message").text();
-			$.messager.alert("消息提醒",message,"info");
-			
-			$("#user_photo").attr("src", "PhotoServlet?method=GetPhoto&t="+new Date().getTime());
-		}, 1500)
+		
 	});
+		function uploadPhoto(){
+			var action = $("#uploadForm").attr('action');
+			$("#uploadForm").attr('action',action+'&sid='+$("#set-photo-id").val());
+			$("#uploadForm").submit();
+			
+			
+			setTimeout(function(){
+				var message =  $(window.frames["photo_target"].document).find("#message").text();
+				$.messager.alert("消息提醒",message,"info");
+				
+				$("#edit_photo").attr("src", "PhotoServlet?method=getPhoto&sid="+$("#set-photo-id").val());
+			}, 1500)
+		}
 	</script>
 </head>
 <body>
@@ -448,7 +455,7 @@
 	    		<!-- StudentServlet?method=SetPhoto -->
 	    		<input type="hidden" name="sid" id="set-photo-id">
 		    	<input class="easyui-filebox" name="photo" data-options="prompt:'选择照片'" style="width:200px;">
-		    	<input id="uploadBtn" class="easyui-linkbutton" style="width: 50px; height: 24px;" type="button" value="上传"/>
+		    	<input id="uploadBtn" onClick="uploadPhoto()" class="easyui-linkbutton" style="width: 50px; height: 24px;" type="button" value="上传"/>
 		    </form>
 		</div>
 		<form id="editForm" method="post">

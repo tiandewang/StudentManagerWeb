@@ -47,7 +47,7 @@ public class BaseDao {
 		}
 		return false;
 	}
-	public Connection getConnection() throws SQLException {
+	public Connection getConnection(){
 		return dbUtil.getConnection();
 	}
 }

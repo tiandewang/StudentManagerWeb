@@ -39,6 +39,28 @@ public class StudentServlet extends HttpServlet {
 			getStudentList(request, response);
 		}else if("EditStudent".equals(method)) {
 			editStudent(request, response);
+		}else if ("DeleteStudent".equals(method)) {
+			deleteStudent(request, response);
+		}
+	}
+	private void deleteStudent(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		String[] ids = request.getParameterValues("ids[]");
+		String idStr = "";
+		for(String id : ids) {
+			idStr += id + ",";
+		}
+		idStr = idStr.substring(0, idStr.length()-1);
+		StudentDao studentDao = new StudentDao();
+		if(studentDao.deleteStudent(idStr)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				studentDao.closeCon();
+			}
 		}
 	}
 	private void editStudent(HttpServletRequest request, HttpServletResponse response) {

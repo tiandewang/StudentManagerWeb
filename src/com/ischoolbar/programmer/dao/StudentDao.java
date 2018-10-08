@@ -1,16 +1,15 @@
 package com.ischoolbar.programmer.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ischoolbar.programmer.model.Clazz;
 import com.ischoolbar.programmer.model.Page;
 import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.StringUtil;
-import com.mysql.jdbc.Connection;
 
 public class StudentDao extends BaseDao {
 	public boolean addStudent(Student student) {
@@ -30,19 +29,25 @@ public class StudentDao extends BaseDao {
 		sql += " where id = " + student.getId();
 		return update(sql);
 	}
-	public boolean setStudentPhoto(Student student) throws SQLException {
+	public boolean setStudentPhoto(Student student){
 		// TODO Auto-generated method stub
-		String sql = "update s_student set photo = ?";
-		java.sql.Connection connection = getConnection();
+		String sql = "update s_student set photo = ? where id = ?";
+		Connection connection = getConnection();
 		try {
 			PreparedStatement prepareStatement = connection.prepareStatement(sql);
 			prepareStatement.setBinaryStream(1, student.getPhoto());
+			prepareStatement.setInt(2, student.getId());
 			return prepareStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		return update(sql);
+	}
+	public boolean deleteStudent(String ids) {
+		// TODO Auto-generated method stub
+		String sql = "delete from s_student where id in("+ids+")";
 		return update(sql);
 	}
 	public Student getStudent(int id) {
@@ -57,6 +62,7 @@ public class StudentDao extends BaseDao {
 				student.setMobile(resultSet.getString("mobile"));
 				student.setName(resultSet.getString("name"));
 				student.setPassword(resultSet.getString("password"));
+				student.setPhoto(resultSet.getBinaryStream("photo"));
 				student.setQq(resultSet.getString("qq"));
 				student.setSex(resultSet.getString("sex"));
 				student.setSn(resultSet.getString("sn"));
@@ -91,6 +97,7 @@ public class StudentDao extends BaseDao {
 				s.setMobile(resultSet.getString("mobile"));
 				s.setName(resultSet.getString("name"));
 				s.setPassword(resultSet.getString("password"));
+				s.setPhoto(resultSet.getBinaryStream("photo"));
 				s.setQq(resultSet.getString("qq"));
 				s.setSex(resultSet.getString("sex"));
 				s.setSn(resultSet.getString("sn"));
