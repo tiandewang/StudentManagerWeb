@@ -1,16 +1,11 @@
 package com.ischoolbar.programmer.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.ischoolbar.programmer.model.Clazz;
-import com.ischoolbar.programmer.model.Page;
-import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.DbUtil;
-import com.ischoolbar.programmer.util.StringUtil;
 
 /**
  * 
@@ -51,6 +46,9 @@ public class BaseDao {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	public Connection getConnection() throws SQLException {
+		return dbUtil.getConnection();
 	}
 }
 

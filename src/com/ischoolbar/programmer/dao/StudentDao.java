@@ -1,5 +1,6 @@
 package com.ischoolbar.programmer.dao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import com.ischoolbar.programmer.model.Clazz;
 import com.ischoolbar.programmer.model.Page;
 import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.StringUtil;
+import com.mysql.jdbc.Connection;
 
 public class StudentDao extends BaseDao {
 	public boolean addStudent(Student student) {
@@ -26,6 +28,21 @@ public class StudentDao extends BaseDao {
 		sql += ",qq = '" + student.getQq() + "'";
 		sql += ",clazz_id = " + student.getClazzId();
 		sql += " where id = " + student.getId();
+		return update(sql);
+	}
+	public boolean setStudentPhoto(Student student) throws SQLException {
+		// TODO Auto-generated method stub
+		String sql = "update s_student set photo = ?";
+		java.sql.Connection connection = getConnection();
+		try {
+			PreparedStatement prepareStatement = connection.prepareStatement(sql);
+			prepareStatement.setBinaryStream(1, student.getPhoto());
+			return prepareStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return update(sql);
 	}
 	public Student getStudent(int id) {
@@ -109,4 +126,5 @@ public class StudentDao extends BaseDao {
 		}
 		return total;
 	}
+	
 }
