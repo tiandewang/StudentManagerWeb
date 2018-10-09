@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 
 import com.ischoolbar.programmer.dao.StudentDao;
+import com.ischoolbar.programmer.dao.TeacherDao;
 import com.ischoolbar.programmer.model.Student;
+import com.ischoolbar.programmer.model.Teacher;
 import com.lizhou.exception.FileFormatException;
 import com.lizhou.exception.NullFileException;
 import com.lizhou.exception.ProtocolException;
@@ -65,6 +67,17 @@ public class PhotoServlet extends HttpServlet {
 				student.setPhoto(uploadInputStream);
 				StudentDao studentDao = new StudentDao();
 				if (studentDao.setStudentPhoto(student)) {
+					response.getWriter().write("<div id='message'>上传成功！</div>");
+				} else {
+					response.getWriter().write("<div id='message'>上传失败！</div>");
+				}
+			}
+			if (tid != 0) {
+				Teacher teacher = new Teacher();
+				teacher.setId(tid);
+				teacher.setPhoto(uploadInputStream);
+				TeacherDao teacherDao = new TeacherDao();
+				if (teacherDao.setTeacherPhoto(teacher)) {
 					response.getWriter().write("<div id='message'>上传成功！</div>");
 				} else {
 					response.getWriter().write("<div id='message'>上传失败！</div>");
@@ -146,6 +159,25 @@ public class PhotoServlet extends HttpServlet {
 			studentDao.closeCon();
 			if (student != null) {
 				InputStream photo = student.getPhoto();
+				if (photo != null) {
+					try {
+						byte[] b = new byte[photo.available()];
+						photo.read(b);
+						response.getOutputStream().write(b, 0, b.length);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return;
+				}
+			}
+		}if (tid != 0) {
+			// 老师
+			TeacherDao teacherDao = new TeacherDao();
+			Teacher teacher = teacherDao.getTeacher(tid);
+			teacherDao.closeCon();
+			if (teacher != null) {
+				InputStream photo = teacher.getPhoto();
 				if (photo != null) {
 					try {
 						byte[] b = new byte[photo.available()];

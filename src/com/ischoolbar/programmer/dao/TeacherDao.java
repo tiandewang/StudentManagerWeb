@@ -1,12 +1,13 @@
 package com.ischoolbar.programmer.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ischoolbar.programmer.model.Page;
-import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.model.Teacher;
 import com.ischoolbar.programmer.util.StringUtil;
 
@@ -32,6 +33,50 @@ public class TeacherDao extends BaseDao {
 		sql += ",clazz_id = " + teacher.getClazzId();
 		sql += " where id = " + teacher.getId();
 		return update(sql);
+	}
+	public boolean setTeacherPhoto(Teacher teacher){
+		// TODO Auto-generated method stub
+		String sql = "update s_teacher set photo = ? where id = ?";
+		Connection connection = getConnection();
+		try {
+			PreparedStatement prepareStatement = connection.prepareStatement(sql);
+			prepareStatement.setBinaryStream(1, teacher.getPhoto());
+			prepareStatement.setInt(2, teacher.getId());
+			return prepareStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return update(sql);
+	}
+	public boolean deleteTeacher(String ids) {
+		// TODO Auto-generated method stub
+		String sql = "delete from s_teacher where id in("+ids+")";
+		return update(sql);
+	}
+	public Teacher getTeacher(int id) {
+		String sql = "select * from s_teacher where id = " + id;
+		Teacher teacher = null;
+		ResultSet resultSet = query(sql);
+		try {
+			if (resultSet.next()) {
+				teacher = new Teacher();
+				teacher.setId(resultSet.getInt("id"));
+				teacher.setClazzId(resultSet.getInt("clazz_id"));
+				teacher.setMobile(resultSet.getString("mobile"));
+				teacher.setName(resultSet.getString("name"));
+				teacher.setPassword(resultSet.getString("password"));
+				teacher.setPhoto(resultSet.getBinaryStream("photo"));
+				teacher.setQq(resultSet.getString("qq"));
+				teacher.setSex(resultSet.getString("sex"));
+				teacher.setSn(resultSet.getString("sn"));
+				return teacher;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return teacher;
 	}
 	public List<Teacher> getTeacherList(Teacher teacher, Page page) {
 		List<Teacher> ret = new ArrayList<Teacher>();

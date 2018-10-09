@@ -97,16 +97,12 @@
             	$(selectRows).each(function(i, row){
             		ids[i] = row.id;
             	});
-            	var numbers = [];
-            	$(selectRows).each(function(i, row){
-            		numbers[i] = row.number;
-            	});
             	$.messager.confirm("消息提醒", "将删除与教师相关的所有数据，确认继续？", function(r){
             		if(r){
             			$.ajax({
 							type: "post",
 							url: "TeacherServlet?method=DeleteTeacher",
-							data: {ids: ids,numbers:numbers},
+							data: {ids: ids},
 							success: function(msg){
 								if(msg == "success"){
 									$.messager.alert("消息提醒","删除成功!","info");
@@ -341,7 +337,8 @@
 				$("#edit_sex").textbox('setValue', selectRow.sex);
 				$("#edit_phone").textbox('setValue', selectRow.mobile);
 				$("#edit_qq").textbox('setValue', selectRow.qq);
-				$("#edit_photo").attr("src", "PhotoServlet?method=getPhoto&type=2&sid="+selectRow.id);
+				$("#edit_photo").attr("src", "PhotoServlet?method=getPhoto&type=2&tid="+selectRow.id);
+				$("#set-photo-id").val(selectRow.id);
 				var clazzid = selectRow.clazzId;
 				setTimeout(function(){
 					$("#edit_clazzList").combobox('setValue', clazzid);
@@ -363,6 +360,26 @@
 	  		});
 	  	});
 	});
+	
+	//上传图片按钮事件
+	$("#uploadBtn").click(function(){
+		
+	});
+		function uploadPhoto(){
+			var action = $("#uploadForm").attr('action');
+			var pos = action.indexOf('tid');
+			if(pos != -1){
+				action = action.substring(0,pos-1);
+			}
+			$("#uploadForm").attr('action',action+'&tid='+$("#set-photo-id").val());
+			$("#uploadForm").submit();
+			
+			setTimeout(function(){
+				var message =  $(window.frames["photo_target"].document).find("#message").text();
+				$.messager.alert("消息提醒",message,"info");
+				$("#edit_photo").attr("src", "PhotoServlet?method=getPhoto&tid="+$("#set-photo-id").val());
+			}, 1500)
+		}
 	</script>
 </head>
 <body>
@@ -427,6 +444,12 @@
 	<div id="editDialog" style="padding: 10px">
 		<div style=" position: absolute; margin-left: 560px; width: 200px; border: 1px solid #EEF4FF">
 	    	<img id="edit_photo" alt="照片" style="max-width: 200px; max-height: 400px;" title="照片" src="" />
+	    	<form id="uploadForm" method="post" enctype="multipart/form-data" action="PhotoServlet?method=SetPhoto" target="photo_target">
+	    		<!-- StudentServlet?method=SetPhoto -->
+	    		<input type="hidden" name="tid" id="set-photo-id">
+		    	<input class="easyui-filebox" name="photo" data-options="prompt:'选择照片'" style="width:200px;">
+		    	<input id="uploadBtn" onClick="uploadPhoto()" class="easyui-linkbutton" style="width: 50px; height: 24px;" type="button" value="上传"/>
+		    </form>
 	    </div>   
     	<form id="editForm" method="post">
 	    	<table id="editTable" border=0 style="width:800px; table-layout:fixed;" cellpadding="6" >
@@ -455,6 +478,7 @@
 	    </form>
 	</div>
 	
-	
+	<!-- 提交表单处理iframe框架 -->
+	<iframe id="photo_target" name="photo_target"></iframe>  
 </body>
 </html>

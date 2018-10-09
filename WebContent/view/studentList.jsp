@@ -360,6 +360,10 @@
 	});
 		function uploadPhoto(){
 			var action = $("#uploadForm").attr('action');
+			var pos = action.indexOf('sid');
+			if(pos != -1){
+				action = action.substring(0,pos-1);
+			}
 			$("#uploadForm").attr('action',action+'&sid='+$("#set-photo-id").val());
 			$("#uploadForm").submit();
 			

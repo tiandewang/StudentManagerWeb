@@ -38,7 +38,7 @@ public class TeacherServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String method = request.getParameter("method");
 		if("toTeacherListView".equals(method)) {
-			TeacherList(request, response);
+			teacherList(request, response);
 		}else if("AddTeacher".equals(method)) {
 			addTeacher(request, response);
 		}else if("TeacherList".equals(method)) {
@@ -52,7 +52,23 @@ public class TeacherServlet extends HttpServlet {
 
 	private void deleteTeacher(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		
+		String[] ids = request.getParameterValues("ids[]");
+		String idStr = "";
+		for(String id : ids) {
+			idStr += id + ",";
+		}
+		idStr = idStr.substring(0, idStr.length()-1);
+		TeacherDao teacherDao = new TeacherDao();
+		if(teacherDao.deleteTeacher(idStr)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				teacherDao.closeCon();
+			}
+		}
 	}
 
 	private void editTeacher(HttpServletRequest request, HttpServletResponse response) {
@@ -70,7 +86,6 @@ public class TeacherServlet extends HttpServlet {
 		teacher.setId(id);
 		teacher.setQq(qq);
 		teacher.setSex(sex);
-		teacher.setSn(SnGenerateUtil.generateSn(clazzId));
 		TeacherDao teacherDao = new TeacherDao();
 		if(teacherDao.editTeacher(teacher)) {
 			try {
@@ -93,10 +108,10 @@ public class TeacherServlet extends HttpServlet {
 		Teacher teacher = new Teacher();
 		teacher.setName(name);
 		teacher.setClazzId(clazz);
-		TeacherDao teachertDao = new TeacherDao();
-		List<Teacher> teacherList = teachertDao.getTeacherList(teacher, new Page(currentPage, pageSize));
-		int total = teachertDao.getTeacherListTotal(teacher);
-		teachertDao.closeCon();
+		TeacherDao teacherDao = new TeacherDao();
+		List<Teacher> teacherList = teacherDao.getTeacherList(teacher, new Page(currentPage, pageSize));
+		int total = teacherDao.getTeacherListTotal(teacher);
+		teacherDao.closeCon();
 		response.setCharacterEncoding("UTF-8");
 		Map<String, Object> ret = new HashMap<String, Object>();
 		ret.put("total",total);
@@ -143,7 +158,7 @@ public class TeacherServlet extends HttpServlet {
 		}
 	}
 
-	private void TeacherList(HttpServletRequest request, HttpServletResponse response) {
+	private void teacherList(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		try {
 			request.getRequestDispatcher("view/teacherList.jsp").forward(request, response);
