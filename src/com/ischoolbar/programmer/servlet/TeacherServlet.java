@@ -44,7 +44,7 @@ public class TeacherServlet extends HttpServlet {
 		}else if("TeacherList".equals(method)) {
 			getTeacherList(request, response);
 		}else if("EditTeacher".equals(method)) {
-			editTeachert(request, response);
+			editTeacher(request, response);
 		}else if ("DeleteTeacher".equals(method)) {
 			deleteTeacher(request, response);
 		}
@@ -55,9 +55,33 @@ public class TeacherServlet extends HttpServlet {
 		
 	}
 
-	private void editTeachert(HttpServletRequest request, HttpServletResponse response) {
+	private void editTeacher(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		
+		String name = request.getParameter("name");
+		int id = Integer.parseInt(request.getParameter("id"));
+		String sex = request.getParameter("sex");
+		String mobile = request.getParameter("mobile");
+		String qq = request.getParameter("qq");
+		int clazzId = Integer.parseInt(request.getParameter("clazzid"));
+		Teacher teacher = new Teacher();
+		teacher.setClazzId(clazzId);
+		teacher.setMobile(mobile);
+		teacher.setName(name);
+		teacher.setId(id);
+		teacher.setQq(qq);
+		teacher.setSex(sex);
+		teacher.setSn(SnGenerateUtil.generateSn(clazzId));
+		TeacherDao teacherDao = new TeacherDao();
+		if(teacherDao.editTeacher(teacher)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				teacherDao.closeCon();
+			}
+		}
 	}
 
 	private void getTeacherList(HttpServletRequest request, HttpServletResponse response) {

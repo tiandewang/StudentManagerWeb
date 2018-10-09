@@ -23,6 +23,16 @@ public class TeacherDao extends BaseDao {
 		sql += ",'" + teacher.getQq() + "',null)";
 		return update(sql);
 	}
+	public boolean editTeacher(Teacher teacher) {
+		// TODO Auto-generated method stub
+		String sql = "update s_teacher set name = '"+teacher.getName()+"'";
+		sql += ",sex = '" + teacher.getSex() + "'";
+		sql += ",mobile = '" + teacher.getMobile() + "'";
+		sql += ",qq = '" + teacher.getQq() + "'";
+		sql += ",clazz_id = " + teacher.getClazzId();
+		sql += " where id = " + teacher.getId();
+		return update(sql);
+	}
 	public List<Teacher> getTeacherList(Teacher teacher, Page page) {
 		List<Teacher> ret = new ArrayList<Teacher>();
 		String sql = "select * from s_teacher ";

@@ -38,8 +38,29 @@
  		        {field:'sex',title:'性别',width:100},
  		        {field:'mobile',title:'电话',width:150},
  		        {field:'qq',title:'QQ',width:150},
+ 		       	{field:'clazz_id',title:'班级',width:150, 
+ 		        	formatter: function(value,row,index){
+ 						if (row.clazzId){
+ 							var clazzList = $("#clazzList").combobox("getData");
+ 							for (var i=0;i<clazzList.length;i++ ){
+ 								//console.log(clazzList[i]);
+ 								if(row.clazzId == clazzList[i].id)return clazzList[i].name;
+ 							}
+ 							return row.clazzId;
+ 						} else {
+ 							return 'not found';
+ 						}
+ 					}
+				}
 	 		]], 
-	        toolbar: "#toolbar"
+	        toolbar: "#toolbar",
+	        onBeforeLoad : function(){
+	        	try{
+	        		$("#clazzList").combobox("getData")
+	        	}catch(err){
+	        		preLoadClazz();
+	        	}
+	        }	    
 	    }); 
 	    //设置分页控件 
 	    var p = $('#dataList').datagrid('getPager'); 
@@ -102,6 +123,24 @@
             	});
             }
 	    });
+	    
+	    function preLoadClazz(){
+	  		$("#clazzList").combobox({
+		  		width: "150",
+		  		height: "25",
+		  		valueField: "id",
+		  		textField: "name",
+		  		multiple: false, //可多选
+		  		editable: false, //不可编辑
+		  		method: "post",
+		  		url: "ClazzServlet?method=getClazzList&t="+new Date().getTime()+"&from=combox",
+		  		onChange: function(newValue, oldValue){
+		  			//加载班级下的学生
+		  			//$('#dataList').datagrid("options").queryParams = {clazzid: newValue};
+		  			//$('#dataList').datagrid("reload");
+		  		}
+		  	});
+	  	}
 	    
 	  	//设置添加窗口
 	    $("#addDialog").dialog({
@@ -191,7 +230,7 @@
 	  	
 	  	
 	  //下拉框通用属性
-	  	$("#add_gradeList, #add_clazzList").combobox({
+	  	$("#edit_clazzList, #add_clazzList").combobox({
 	  		width: "200",
 	  		height: "30",
 	  		valueField: "id",
@@ -212,7 +251,15 @@
 	  		}
 	  	});
 	  	
-	  	
+	  	//编辑教师信息班级下拉框
+	  	$("#edit_clazzList").combobox({
+	  		url: "ClazzServlet?method=getClazzList&t="+new Date().getTime()+"&from=combox",
+			onLoadSuccess: function(){
+				//默认选择第一条数据
+				var data = $(this).combobox("getData");
+				$(this).combobox("setValue", data[0].id);
+	  		}
+	  	});
 	  	
 	  	//编辑教师信息
 	  	$("#editDialog").dialog({
@@ -237,21 +284,13 @@
 							$.messager.alert("消息提醒","请检查你输入的数据!","warning");
 							return;
 						} else{
-							var chooseCourse = [];
-							$(table).find(".chooseTr").each(function(){
-								var gradeid = $(this).find("input[textboxname='gradeid']").attr("gradeId");
-								var clazzid = $(this).find("input[textboxname='clazzid']").attr("clazzId");
-								var courseid = $(this).find("input[textboxname='courseid']").attr("courseId");
-								var course = gradeid+"_"+clazzid+"_"+courseid;
-								chooseCourse.push(course);
-							});
+							var clazzid = $("#edit_clazzList").combobox("getValue");
 							var id = $("#dataList").datagrid("getSelected").id;
-							var number = $("#edit_number").textbox("getText");
 							var name = $("#edit_name").textbox("getText");
 							var sex = $("#edit_sex").textbox("getText");
 							var phone = $("#edit_phone").textbox("getText");
 							var qq = $("#edit_qq").textbox("getText");
-							var data = {id:id, number:number, name:name,sex:sex,phone:phone,qq:qq,course:chooseCourse};
+							var data = {id:id, clazzid:clazzid, name:name,sex:sex,mobile:phone,qq:qq};
 							
 							$.ajax({
 								type: "post",
@@ -263,12 +302,10 @@
 										//关闭窗口
 										$("#editDialog").dialog("close");
 										//清空原表格数据
-										$("#edit_number").textbox('setValue', "");
 										$("#edit_name").textbox('setValue', "");
 										$("#edit_sex").textbox('setValue', "男");
 										$("#edit_phone").textbox('setValue', "");
 										$("#edit_qq").textbox('setValue', "");
-										$(table).find(".chooseTr").remove();
 										
 										//重新刷新页面数据
 							  			$('#dataList').datagrid("reload");
@@ -300,24 +337,31 @@
 			onBeforeOpen: function(){
 				var selectRow = $("#dataList").datagrid("getSelected");
 				//设置值
-				$("#edit_number").textbox('setValue', selectRow.number);
 				$("#edit_name").textbox('setValue', selectRow.name);
 				$("#edit_sex").textbox('setValue', selectRow.sex);
-				$("#edit_phone").textbox('setValue', selectRow.phone);
+				$("#edit_phone").textbox('setValue', selectRow.mobile);
 				$("#edit_qq").textbox('setValue', selectRow.qq);
-				$("#edit_photo").attr("src", "PhotoServlet?method=GetPhoto&type=3&number="+selectRow.number);
-				
+				$("#edit_photo").attr("src", "PhotoServlet?method=getPhoto&type=2&sid="+selectRow.id);
+				var clazzid = selectRow.clazzId;
+				setTimeout(function(){
+					$("#edit_clazzList").combobox('setValue', clazzid);
+				}, 100);
 			},
 			onClose: function(){
 				$("#edit_name").textbox('setValue', "");
 				$("#edit_phone").textbox('setValue', "");
 				$("#edit_qq").textbox('setValue', "");
 				
-				$(table).find(".chooseTr").remove();
 			}
 	    });
 	   	
-	  	
+	  //搜索按钮监听事件
+	  	$("#search-btn").click(function(){
+	  		$('#dataList').datagrid('load',{
+	  			teacherName: $('#search_student_name').val(),
+	  			clazzid: $("#clazzList").combobox('getValue') == '' ? 0 : $("#clazzList").combobox('getValue')
+	  		});
+	  	});
 	});
 	</script>
 </head>
@@ -332,7 +376,12 @@
 			<div style="float: left;" class="datagrid-btn-separator"></div>
 		<div style="float: left;"><a id="edit" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a></div>
 			<div style="float: left;" class="datagrid-btn-separator"></div>
-		<div><a id="delete" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-some-delete',plain:true">删除</a></div>
+		<div style="float: left;"><a id="delete" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-some-delete',plain:true">删除</a></div>
+		
+		<div style="float: left;margin-top:4px;" class="datagrid-btn-separator" >&nbsp;&nbsp;姓名：<input id="search_student_name" class="easyui-textbox" name="search_student_name" /></div>
+		<div style="margin-left: 10px;margin-top:4px;" >班级：<input id="clazzList" class="easyui-textbox" name="clazz" />
+			<a id="search-btn" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true">搜索</a>
+		</div>
 	</div>
 	
 	<!-- 添加窗口 -->
@@ -376,14 +425,14 @@
 	
 	<!-- 修改窗口 -->
 	<div id="editDialog" style="padding: 10px">
-		<div style=" position: absolute; margin-left: 560px; width: 250px; height: 300px; border: 1px solid #EEF4FF">
+		<div style=" position: absolute; margin-left: 560px; width: 200px; border: 1px solid #EEF4FF">
 	    	<img id="edit_photo" alt="照片" style="max-width: 200px; max-height: 400px;" title="照片" src="" />
 	    </div>   
     	<form id="editForm" method="post">
 	    	<table id="editTable" border=0 style="width:800px; table-layout:fixed;" cellpadding="6" >
 	    		<tr>
-	    			<td style="width:40px">工号:</td>
-	    			<td colspan="3"><input id="edit_number" data-options="readonly: true" class="easyui-textbox" style="width: 200px; height: 30px;" type="text" name="number" data-options="required:true, validType:'repeat', missingMessage:'请输入工号'" /></td>
+	    			<td style="width:40px">班级:</td>
+	    			<td colspan="3"><input id="edit_clazzList" style="width: 200px; height: 30px;" class="easyui-textbox" name="clazzid" /></td>
 	    			<td style="width:80px"></td>
 	    		</tr>
 	    		<tr>
