@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.ischoolbar.programmer.model.Admin;
+import com.ischoolbar.programmer.model.Clazz;
 
 public class AdminDao extends BaseDao {
 
@@ -29,5 +30,10 @@ public class AdminDao extends BaseDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public boolean editPassword(Admin admin,String newPassword) {
+		// TODO Auto-generated method stub
+		String sql = "update s_admin set password = '"+newPassword+"' where id = " + admin.getId();
+		return update(sql);
 	}
 }
