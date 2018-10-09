@@ -1,11 +1,24 @@
 package com.ischoolbar.programmer.servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ischoolbar.programmer.dao.StudentDao;
+import com.ischoolbar.programmer.dao.TeacherDao;
+import com.ischoolbar.programmer.model.Page;
+import com.ischoolbar.programmer.model.Student;
+import com.ischoolbar.programmer.model.Teacher;
+import com.ischoolbar.programmer.util.SnGenerateUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 /**
  * 
  * @author tian-de-gui-ren
@@ -26,13 +39,13 @@ public class TeacherServlet extends HttpServlet {
 		String method = request.getParameter("method");
 		if("toTeacherListView".equals(method)) {
 			TeacherList(request, response);
-		}else if("AddStudent".equals(method)) {
+		}else if("AddTeacher".equals(method)) {
 			addTeacher(request, response);
-		}else if("StudentList".equals(method)) {
+		}else if("TeacherList".equals(method)) {
 			getTeacherList(request, response);
-		}else if("EditStudent".equals(method)) {
+		}else if("EditTeacher".equals(method)) {
 			editTeachert(request, response);
-		}else if ("DeleteStudent".equals(method)) {
+		}else if ("DeleteTeacher".equals(method)) {
 			deleteTeacher(request, response);
 		}
 	}
@@ -49,12 +62,61 @@ public class TeacherServlet extends HttpServlet {
 
 	private void getTeacherList(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		
+		String name = request.getParameter("teacherName");
+		Integer currentPage = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
+		Integer pageSize = request.getParameter("rows") == null ? 999 : Integer.parseInt(request.getParameter("rows"));
+		Integer clazz = request.getParameter("clazzid") == null ? 0 : Integer.parseInt(request.getParameter("clazzid"));
+		Teacher teacher = new Teacher();
+		teacher.setName(name);
+		teacher.setClazzId(clazz);
+		TeacherDao teachertDao = new TeacherDao();
+		List<Teacher> teacherList = teachertDao.getTeacherList(teacher, new Page(currentPage, pageSize));
+		int total = teachertDao.getTeacherListTotal(teacher);
+		teachertDao.closeCon();
+		response.setCharacterEncoding("UTF-8");
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("total",total);
+		ret.put("rows", teacherList);
+		try {
+			String from = request.getParameter("from");
+			if("combox".equals(from)) {
+				response.getWriter().write(JSONArray.fromObject(teacherList).toString());
+			}else {
+			response.getWriter().write(JSONObject.fromObject(ret).toString());
+			}
+		} catch (IOException e) { 
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void addTeacher(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		
+		String name = request.getParameter("name");
+		String password = request.getParameter("password");
+		String sex = request.getParameter("sex");
+		String mobile = request.getParameter("mobile");
+		String qq = request.getParameter("qq");
+		int clazzId = Integer.parseInt(request.getParameter("clazzid"));
+		Teacher teacher = new Teacher();
+		teacher.setClazzId(clazzId);
+		teacher.setMobile(mobile);
+		teacher.setName(name);
+		teacher.setPassword(password);
+		teacher.setQq(qq);
+		teacher.setSex(sex);
+		teacher.setSn(SnGenerateUtil.generateTeacherSn(clazzId));
+		TeacherDao teacherDao = new TeacherDao();
+		if(teacherDao.addTeacher(teacher)) {
+			try {
+				response.getWriter().write("success");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				teacherDao.closeCon();
+			}
+		}
 	}
 
 	private void TeacherList(HttpServletRequest request, HttpServletResponse response) {

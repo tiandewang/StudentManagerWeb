@@ -33,28 +33,11 @@
 	        columns: [[  
 				{field:'chk',checkbox: true,width:50},
  		        {field:'id',title:'ID',width:50, sortable: true},    
- 		        {field:'number',title:'工号',width:150, sortable: true},    
+ 		        {field:'sn',title:'工号',width:150, sortable: true},    
  		        {field:'name',title:'姓名',width:150},
  		        {field:'sex',title:'性别',width:100},
- 		        {field:'phone',title:'电话',width:150},
+ 		        {field:'mobile',title:'电话',width:150},
  		        {field:'qq',title:'QQ',width:150},
- 		        {field:'courseList',title:'课程',width:500, 
- 		        	formatter: function(value,row,index){
- 						if (row.courseList){
- 							var courseList = row.courseList;
- 							var course = "";
- 							for(var i = 0;i < courseList.length;i++){
- 								var gradeName = courseList[i].grade.name;
- 								var clazzName = courseList[i].clazz.name;
- 								var courseName = courseList[i].course.name;
- 								course += "[" + gradeName + " " + clazzName + " " + courseName + "] &nbsp;&nbsp;&nbsp;";
- 							}
- 							return course;
- 						} else {
- 							return value;
- 						}
- 					}	
- 		        }
 	 		]], 
 	        toolbar: "#toolbar"
 	    }); 
@@ -143,12 +126,13 @@
 							$.messager.alert("消息提醒","请检查你输入的数据!","warning");
 							return;
 						} else{
-							var clazzid = $(this).find("input[textboxname='clazzid']").attr("clazzId");
+							var clazzid = $("#add_clazzList").combobox("getValue");
 							var name = $("#add_name").textbox("getText");
+							var password = $("#add_password").textbox("getText");
 							var sex = $("#add_sex").textbox("getText");
 							var phone = $("#add_phone").textbox("getText");
 							var qq = $("#add_qq").textbox("getText");
-							var data = {clazzId:clazzid, name:name,sex:sex,phone:phone,qq:qq};
+							var data = {clazzid:clazzid, name:name,sex:sex,mobile:phone,qq:qq,password:password};
 							
 							$.ajax({
 								type: "post",
@@ -368,6 +352,10 @@
 	    		<tr>
 	    			<td>姓名:</td>
 	    			<td colspan="4"><input id="add_name" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="name" data-options="required:true, missingMessage:'请填写姓名'" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td>密码:</td>
+	    			<td colspan="4"><input id="add_password" style="width: 200px; height: 30px;" class="easyui-textbox" type="password" name="password" data-options="required:true, missingMessage:'请填写密码'" /></td>
 	    		</tr>
 	    		<tr>
 	    			<td>性别:</td>
