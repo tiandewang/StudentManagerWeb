@@ -105,7 +105,9 @@
 			],
 			
 	    });
-		
+	    setTimeout(function(){
+			$("#passwordDialog").dialog("open");
+		},1000)
 		
 	})
 	</script>

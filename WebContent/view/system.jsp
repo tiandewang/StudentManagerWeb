@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -21,16 +22,20 @@
 					 				{"menuid":"21","menuname":"学生列表","icon":"icon-user-student","url":"StudentServlet?method=toStudentListView"},
 								]
 						},
+						<c:if test="${userType == 1 || userType == 3}">
 						{"menuid":"4","icon":"","menuname":"班级信息管理",
 							"menus":[
 									{"menuid":"42","menuname":"班级列表","icon":"icon-house","url":"ClazzServlet?method=toClazzListView"},
 								]
 						},
+						</c:if>
+						<c:if test="${userType == 1}">
 						{"menuid":"3","icon":"","menuname":"教师信息管理",
 							"menus":[
 									{"menuid":"31","menuname":"教师列表","icon":"icon-user-teacher","url":"TeacherServlet?method=toTeacherListView"},
 								]
 						},
+						</c:if>
 						{"menuid":"5","icon":"","menuname":"系统管理",
 							"menus":[
 							        {"menuid":"51","menuname":"修改密码","icon":"icon-set","url":"SystemServlet?method=toPersonalView"},

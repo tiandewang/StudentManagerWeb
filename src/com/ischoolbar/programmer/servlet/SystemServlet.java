@@ -8,7 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ischoolbar.programmer.dao.AdminDao;
+import com.ischoolbar.programmer.dao.StudentDao;
+import com.ischoolbar.programmer.dao.TeacherDao;
 import com.ischoolbar.programmer.model.Admin;
+import com.ischoolbar.programmer.model.Student;
+import com.ischoolbar.programmer.model.Teacher;
 
 /**
  * 
@@ -82,8 +86,74 @@ public class SystemServlet extends HttpServlet {
 			}
 			
 		}
-		request.getSession().getAttribute("user");
-		
+		if(userType == 2) {
+			//学生
+			Student student = (Student)request.getSession().getAttribute("user");
+			if(!student.getPassword().equals(password)) {
+				try {
+					response.getWriter().write("原密码错误！");
+					return;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			StudentDao studentDao = new StudentDao();
+			if(studentDao.editPassword(student, newPassword)) {
+				try {
+					response.getWriter().write("success");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally {
+					studentDao.closeCon();
+				}
+			}else {
+				try {
+					response.getWriter().write("数据库密码修改错误!");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally {
+					studentDao.closeCon();
+				}
+			}
+			
+		}
+		if(userType == 3) {
+			//学生
+			Teacher teacher = (Teacher)request.getSession().getAttribute("user");
+			if(!teacher.getPassword().equals(password)) {
+				try {
+					response.getWriter().write("原密码错误！");
+					return;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			TeacherDao teacherDao = new TeacherDao();
+			if(teacherDao.editPassword(teacher, newPassword)) {
+				try {
+					response.getWriter().write("success");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally {
+					teacherDao.closeCon();
+				}
+			}else {
+				try {
+					response.getWriter().write("数据库密码修改错误!");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally {
+					teacherDao.closeCon();
+				}
+			}
+			
+		}
 	}
 	private void personalView(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub

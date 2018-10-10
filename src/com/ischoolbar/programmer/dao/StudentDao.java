@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ischoolbar.programmer.model.Admin;
 import com.ischoolbar.programmer.model.Page;
 import com.ischoolbar.programmer.model.Student;
 import com.ischoolbar.programmer.util.StringUtil;
@@ -132,6 +133,34 @@ public class StudentDao extends BaseDao {
 			e.printStackTrace();
 		}
 		return total;
+	}
+	public Student login(String name, String password) {
+		String sql = "select * from s_student where name ='" + name + "'and password ='" + password + "'";
+		ResultSet resultSet = query(sql);
+		try {
+			if (resultSet.next()) {
+				Student student = new Student();
+				student.setId(resultSet.getInt("id"));
+				student.setName(resultSet.getString("name"));
+				student.setPassword(resultSet.getString("password"));
+				student.setClazzId(resultSet.getInt("clazz_id"));
+				student.setMobile(resultSet.getString("mobile"));
+				student.setPhoto(resultSet.getBinaryStream("photo"));
+				student.setQq(resultSet.getString("qq"));
+				student.setSex(resultSet.getString("sex"));
+				student.setSn(resultSet.getString("sn"));
+				return student;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public boolean editPassword(Student student,String newPassword) {
+		// TODO Auto-generated method stub
+		String sql = "update s_student set password = '"+newPassword+"' where id = " + student.getId();
+		return update(sql);
 	}
 	
 }

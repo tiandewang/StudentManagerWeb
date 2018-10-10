@@ -8,7 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.ischoolbar.programmer.dao.AdminDao;
+import com.ischoolbar.programmer.dao.StudentDao;
+import com.ischoolbar.programmer.dao.TeacherDao;
 import com.ischoolbar.programmer.model.Admin;
+import com.ischoolbar.programmer.model.Student;
+import com.ischoolbar.programmer.model.Teacher;
 import com.ischoolbar.programmer.util.StringUtil;
 
 /**
@@ -59,6 +63,34 @@ public class LoginServlet extends HttpServlet {
 			}
 			HttpSession session = request.getSession();
 			session.setAttribute("user", admin);
+			session.setAttribute("userType", type);
+			loginStatus = "loginSuccess";
+			break;
+		}
+		case 2: {
+			StudentDao studentDao = new StudentDao();
+			Student student = studentDao.login(name, password);
+			studentDao.closeCon();
+			if (student == null) {
+				response.getWriter().write("loginError");
+				return;
+			}
+			HttpSession session = request.getSession();
+			session.setAttribute("user", student);
+			session.setAttribute("userType", type);
+			loginStatus = "loginSuccess";
+			break;
+		}
+		case 3: {
+			TeacherDao teacherDao = new TeacherDao();
+			Teacher teacher = teacherDao.login(name, password);
+			teacherDao.closeCon();
+			if (teacher == null) {
+				response.getWriter().write("loginError");
+				return;
+			}
+			HttpSession session = request.getSession();
+			session.setAttribute("user", teacher);
 			session.setAttribute("userType", type);
 			loginStatus = "loginSuccess";
 			break;
