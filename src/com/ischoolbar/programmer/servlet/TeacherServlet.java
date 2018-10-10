@@ -105,9 +105,16 @@ public class TeacherServlet extends HttpServlet {
 		Integer currentPage = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
 		Integer pageSize = request.getParameter("rows") == null ? 999 : Integer.parseInt(request.getParameter("rows"));
 		Integer clazz = request.getParameter("clazzid") == null ? 0 : Integer.parseInt(request.getParameter("clazzid"));
+		//获取当前登录类型
+		int userType = Integer.parseInt(request.getSession().getAttribute("userType").toString());
 		Teacher teacher = new Teacher();
 		teacher.setName(name);
 		teacher.setClazzId(clazz);
+		if(userType == 3) {
+			//如果是学生，只能查看自己的信息
+			Teacher currentUser = (Teacher) request.getSession().getAttribute("user");
+			teacher.setId(currentUser.getId());
+		}
 		TeacherDao teacherDao = new TeacherDao();
 		List<Teacher> teacherList = teacherDao.getTeacherList(teacher, new Page(currentPage, pageSize));
 		int total = teacherDao.getTeacherListTotal(teacher);

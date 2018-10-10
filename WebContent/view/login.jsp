@@ -117,7 +117,7 @@
     </form>
   </div>
 </div>
-<div class="footer">Copyright &nbsp; artisan @ 天德贵人 </div>
+<div class="footer">work &nbsp; artisan @ 天德贵人 </div>
 
 
 </body>

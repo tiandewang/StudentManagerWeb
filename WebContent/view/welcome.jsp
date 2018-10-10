@@ -11,7 +11,7 @@
 <div title="欢迎使用" style="padding:20px;overflow:hidden; color:red; " >
 	<p style="font-size: 25px; line-height: 30px; height: 30px;">欢迎使用学生管理系统</p>
   	<p>开发人员：天德贵人</p>
-  	<p>开发周期：2018/9/28 --- 2018/10/7（共计10天）</p>
+  	<p>开发周期：2018/9/28 --- 2018/10/10（共计13天）</p>
   	
   	<hr />
   	<h2>系统环境</h2>
@@ -20,7 +20,7 @@
 	<p>Java版本：JDK 1.8</p>
 	<p>服务器：tomcat 7.0</p>
 	<p>数据库：MySQL 10.1</p>
-	<p>系统采用技术： Servlet+Jsp+Jdbc+dbutils+EasyUI+jQuery+Ajax+面向接口编程</p>
+	<p>系统采用技术： Servlet+Jsp+Jdbc+dbutils+EasyUI+jQuery+Ajax+面向接口编程+MVC</p>
 </div>
 </body>
 </html>

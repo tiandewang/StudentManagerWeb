@@ -29,7 +29,7 @@
 								]
 						},
 						</c:if>
-						<c:if test="${userType == 1}">
+						<c:if test="${userType == 1 || userType == 3}">
 						{"menuid":"3","icon":"","menuname":"教师信息管理",
 							"menus":[
 									{"menuid":"31","menuname":"教师列表","icon":"icon-user-teacher","url":"TeacherServlet?method=toTeacherListView"},
@@ -60,7 +60,7 @@
         <span style="padding-left:10px; font-size: 16px; ">学生信息管理系统</span>
     </div>
     <div region="south" split="true" style="height: 30px; background: #D2E0F2; ">
-        <div class="footer">Copyright &copy; By tian-de-gui-ren </div>
+        <div class="footer">work &copy; By tian-de-gui-ren </div>
     </div>
     <div region="west" hide="true" split="true" title="导航菜单" style="width:180px;" id="west">
 	<div id="nav" class="easyui-accordion" fit="true" border="false">
